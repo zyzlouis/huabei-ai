@@ -1,4 +1,6 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
   --background: #0a0a0f;
@@ -7,13 +9,6 @@
   --primary-gold: #f59e0b;
   --glass-bg: rgba(139, 92, 246, 0.1);
   --glass-border: rgba(245, 158, 11, 0.2);
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
 }
 
 * {
