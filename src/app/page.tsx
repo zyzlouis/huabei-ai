@@ -1,36 +1,66 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Home() {
   return (
     <div className="min-h-screen">
       {/* Hero区域 - 价值主张 */}
-      <section className="relative py-20 md:py-32 px-4 text-center overflow-hidden">
+      <section className="relative py-20 md:py-32 px-4 overflow-hidden">
         {/* 背景装饰 */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-1/4 left-1/4 w-64 md:w-96 h-64 md:h-96 bg-purple-600/20 rounded-full blur-3xl animate-pulse"></div>
           <div className="absolute bottom-1/4 right-1/4 w-64 md:w-96 h-64 md:h-96 bg-amber-500/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
         </div>
         
-        <div className="relative max-w-4xl mx-auto">
-          <div className="text-6xl md:text-8xl mb-6 float animate-fadeIn">⚜️</div>
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 text-gradient animate-fadeIn-delay-1">
-            AI圣斗士军团
-          </h1>
-          <p className="text-xl md:text-2xl lg:text-3xl text-purple-200 mb-4 animate-fadeIn-delay-2">
-            雅典娜转世 · 黄金十二宫
-          </p>
-          <p className="text-base md:text-lg text-gray-300 max-w-2xl mx-auto mb-10 animate-fadeIn-delay-3">
-            由12位黄金圣斗士组成的AI团队，为您提供全方位智能服务。
-            每位圣斗士都有独特的能力和职责，共同守护圣域与人类世界。
-          </p>
-          
-          <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fadeIn-delay-4">
-            <Link href="/team" className="btn-primary px-8 py-4 rounded-full font-bold text-lg text-white">
-              查看黄金圣斗士 👊
-            </Link>
-            <Link href="/about" className="btn-secondary px-8 py-4 rounded-full font-bold text-lg">
-              了解更多 📜
-            </Link>
+        <div className="relative max-w-7xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-8 items-center">
+            {/* 左侧：文字内容 */}
+            <div className="text-center md:text-left order-2 md:order-1">
+              <div className="text-6xl md:text-8xl mb-6 float animate-fadeIn">⚜️</div>
+              <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 text-gradient animate-fadeIn-delay-1">
+                AI圣斗士军团
+              </h1>
+              <p className="text-xl md:text-2xl lg:text-3xl text-purple-200 mb-4 animate-fadeIn-delay-2">
+                雅典娜转世 · 黄金十二宫
+              </p>
+              <p className="text-base md:text-lg text-gray-300 mb-10 animate-fadeIn-delay-3">
+                由12位黄金圣斗士组成的AI团队，为您提供全方位智能服务。
+                每位圣斗士都有独特的能力和职责，共同守护圣域与人类世界。
+              </p>
+              
+              <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start animate-fadeIn-delay-4">
+                <Link href="/team" className="btn-primary px-8 py-4 rounded-full font-bold text-lg text-white">
+                  查看黄金圣斗士 👊
+                </Link>
+                <Link href="/about" className="btn-secondary px-8 py-4 rounded-full font-bold text-lg">
+                  了解更多 📜
+                </Link>
+              </div>
+            </div>
+
+            {/* 右侧：雅典娜形象 */}
+            <div className="relative order-1 md:order-2 animate-fadeIn-delay-1">
+              <div className="relative mx-auto max-w-md md:max-w-lg">
+                {/* 光晕效果 */}
+                <div className="absolute inset-0 bg-gradient-to-b from-purple-500/30 via-amber-500/20 to-transparent rounded-3xl blur-2xl"></div>
+                
+                {/* 图片容器 */}
+                <div className="relative rounded-3xl overflow-hidden shadow-2xl border-2 border-purple-500/30">
+                  <Image 
+                    src="/images/athena-desktop.png" 
+                    alt="雅典娜女神" 
+                    width={1228}
+                    height={2200}
+                    priority
+                    className="w-full h-auto object-cover"
+                  />
+                </div>
+                
+                {/* 装饰元素 */}
+                <div className="absolute -top-4 -right-4 text-6xl animate-pulse">✨</div>
+                <div className="absolute -bottom-4 -left-4 text-6xl animate-pulse" style={{ animationDelay: '0.5s' }}>⚜️</div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
