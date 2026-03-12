@@ -1,20 +1,21 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { SpreadPair, generateMockPrices } from '@/lib/precious-metals'
+import { SpreadPair, fetchMetalsData, generateMockPrices } from '@/lib/precious-metals'
 import Link from 'next/link'
 
-function SpreadCard({ pair }: { pair: SpreadPair }) {
+function SpreadCard({ pair, isRealData }: { pair: SpreadPair; isRealData: boolean }) {
   const [data, setData] = useState<SpreadPair>(pair)
   
-  // 定时刷新数据
+  // 定时刷新数据（真实数据不需要频繁刷新，模拟数据需要）
   useEffect(() => {
-    const interval = setInterval(() => {
-      setData(generateMockPrices().find(p => p.id === pair.id) || pair)
-    }, 3000)
-    
-    return () => clearInterval(interval)
-  }, [pair.id, pair])
+    if (!isRealData) {
+      const interval = setInterval(() => {
+        setData(generateMockPrices().find(p => p.id === pair.id) || pair)
+      }, 3000)
+      return () => clearInterval(interval)
+    }
+  }, [pair.id, pair, isRealData])
   
   const spreadClass = data.spread >= 0 ? 'text-green-400' : 'text-red-400'
   
@@ -57,15 +58,39 @@ function SpreadCard({ pair }: { pair: SpreadPair }) {
 export default function FinancePage() {
   const [pairs, setPairs] = useState<SpreadPair[]>([])
   const [lastUpdate, setLastUpdate] = useState<string>('')
+  const [isRealData, setIsRealData] = useState(false)
+  const [rawGoldPrice, setRawGoldPrice] = useState<number | null>(null)
+  const [error, setError] = useState<string | null>(null)
   
   useEffect(() => {
-    const updatePrices = () => {
-      setPairs(generateMockPrices())
+    const updatePrices = async () => {
+      try {
+        const data = await fetchMetalsData()
+        
+        if (data.success && data.pairs.length > 0) {
+          setPairs(data.pairs)
+          setIsRealData(true)
+          setRawGoldPrice(data.raw.gold_sge || null)
+          setError(null)
+        } else {
+          // API失败，使用后备数据
+          setPairs(generateMockPrices())
+          setIsRealData(false)
+          setError(data.error || '数据获取失败')
+        }
+      } catch (err) {
+        setPairs(generateMockPrices())
+        setIsRealData(false)
+        setError('API连接失败')
+      }
+      
       setLastUpdate(new Date().toLocaleTimeString('zh-CN'))
     }
     
     updatePrices()
-    const interval = setInterval(updatePrices, 3000)
+    
+    // 真实数据每30秒刷新一次，模拟数据每3秒
+    const interval = setInterval(updatePrices, isRealData ? 30000 : 3000)
     
     return () => clearInterval(interval)
   }, [])
@@ -89,15 +114,32 @@ export default function FinancePage() {
           <p className="text-gray-300 text-lg mb-2">
             实时监控 · 公斤条 / RMB美黄金 / 水贝金
           </p>
+          
+          {/* 真实数据来源 */}
+          {isRealData && rawGoldPrice && (
+            <div className="text-sm text-green-400 mt-2">
+              📈 上海金基准价: ¥{rawGoldPrice.toFixed(2)}/克
+            </div>
+          )}
+          
           <div className="text-sm text-gray-400 mt-4 glass inline-block px-4 py-2 rounded-full">
-            最后更新: {lastUpdate} <span className="text-green-400 ml-2">● 实时</span>
+            最后更新: {lastUpdate} 
+            <span className={`ml-2 ${isRealData ? 'text-green-400' : 'text-yellow-400'}`}>
+              ● {isRealData ? '真实数据' : '模拟数据'}
+            </span>
           </div>
+          
+          {error && (
+            <div className="mt-2 text-red-400 text-sm">
+              ⚠️ {error} - 显示模拟数据
+            </div>
+          )}
         </header>
         
         {/* 价差卡片网格 */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
           {pairs.map(pair => (
-            <SpreadCard key={pair.id} pair={pair} />
+            <SpreadCard key={pair.id} pair={pair} isRealData={isRealData} />
           ))}
         </div>
         
@@ -105,7 +147,9 @@ export default function FinancePage() {
         <footer className="glass-card rounded-xl p-8 text-center animate-fadeIn-delay-2">
           <div className="text-4xl mb-3 float-delayed">⚜️</div>
           <p className="text-gray-300 mb-2">
-            数据仅供模拟演示，实际交易请以真实市场数据为准
+            {isRealData 
+              ? '数据来源: 上海黄金交易所 (SGE) - 真实市场数据' 
+              : '数据仅供模拟演示，实际交易请以真实市场数据为准'}
           </p>
           <p className="text-sm text-purple-300 mt-3">
             由处女座·沙加开发 | Powered by 圣域AI军团

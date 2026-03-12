@@ -1,4 +1,4 @@
-// 贵金属价格模拟数据
+// 贵金属价格 - 真实API数据
 
 export type PricePoint = {
   time: string
@@ -15,7 +15,44 @@ export type SpreadPair = {
   spreadPercent: number // 价差百分比
 }
 
-// 基础价格（模拟）
+export type MetalsData = {
+  success: boolean
+  timestamp: number
+  raw: {
+    gold_sge?: number
+    gold_date?: string
+    silver_sge?: number
+    silver_date?: string
+  }
+  pairs: SpreadPair[]
+}
+
+// 从API获取真实数据
+export async function fetchMetalsData(): Promise<MetalsData> {
+  try {
+    const response = await fetch('/api/precious-metals', {
+      next: { revalidate: 0 } // 不缓存，确保实时
+    })
+    
+    if (!response.ok) {
+      throw new Error(`API错误: ${response.status}`)
+    }
+    
+    const data = await response.json()
+    return data as MetalsData
+  } catch (error) {
+    console.error('获取贵金属数据失败:', error)
+    // 返回空数据，让UI显示错误状态
+    return {
+      success: false,
+      timestamp: Date.now(),
+      raw: {},
+      pairs: []
+    }
+  }
+}
+
+// 模拟数据（API失败时的后备）
 const basePrices: Record<string, number> = {
   '公斤条': 475.5,
   'RMB美黄金': 475.8,
@@ -25,13 +62,11 @@ const basePrices: Record<string, number> = {
   '黄金9999': 476.1,
 }
 
-// 生成随机波动
 function randomWalk(base: number, volatility: number = 0.3): number {
   const change = (Math.random() - 0.5) * 2 * volatility
   return base + change
 }
 
-// 生成价格点
 function generatePricePoint(basePrice: number, timeOffset: number): PricePoint {
   const price = randomWalk(basePrice, 0.2 + timeOffset * 0.05)
   const change = price - basePrice + (Math.random() - 0.5) * 0.5
@@ -42,7 +77,6 @@ function generatePricePoint(basePrice: number, timeOffset: number): PricePoint {
   }
 }
 
-// 生成价差交易对数据
 function generateSpreadPair(
   id: string,
   name: string,
@@ -79,7 +113,6 @@ function generateSpreadPair(
   }
 }
 
-// 所有价差交易对
 export function getAllSpreadPairs(): SpreadPair[] {
   return [
     generateSpreadPair('1', '公斤条 vs RMB美黄金', '公斤条', 'RMB美黄金'),
@@ -91,7 +124,7 @@ export function getAllSpreadPairs(): SpreadPair[] {
   ]
 }
 
-// 获取实时价格（带实时更新）
+// 后备模拟数据（仅当API失败时使用）
 export function generateMockPrices(): SpreadPair[] {
   return getAllSpreadPairs()
 }
