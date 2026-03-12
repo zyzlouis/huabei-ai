@@ -76,7 +76,7 @@ export default function FinancePage() {
           // API失败，使用后备数据
           setPairs(generateMockPrices())
           setIsRealData(false)
-          setError(data.error || '数据获取失败')
+          setError('数据获取失败')
         }
       } catch (err) {
         setPairs(generateMockPrices())
