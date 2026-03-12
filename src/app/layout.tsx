@@ -53,6 +53,7 @@ export default function RootLayout({
               <Link href="/" className="nav-link text-sm">首页</Link>
               <Link href="/about" className="nav-link text-sm">关于</Link>
               <Link href="/team" className="nav-link text-sm">团队</Link>
+              <Link href="/stories" className="nav-link text-sm">故事</Link>
               <Link href="/science" className="nav-link text-sm">科普</Link>
               <Link href="/guestbook" className="nav-link text-sm">留言板</Link>
             </div>

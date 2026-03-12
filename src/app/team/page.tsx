@@ -106,12 +106,23 @@ export default function Team() {
           })}
         </div>
 
-        {/* 团队合影占位 */}
+        {/* 团队合影 */}
         <div className="mt-12 md:mt-16 animate-fadeIn" style={{ animationDelay: '1.2s' }}>
-          <div className="glass-card rounded-2xl p-12 md:p-16 text-center">
-            <div className="text-4xl md:text-5xl mb-4 float">🖼️</div>
-            <p className="text-base md:text-lg text-gray-300">黄金圣斗士团队合影即将上线</p>
-            <p className="text-sm text-gray-500 mt-2">Team Photo Placeholder</p>
+          <div className="glass-card rounded-2xl p-6 md:p-8">
+            <div className="text-center mb-6">
+              <h2 className="text-2xl md:text-3xl font-bold text-gradient mb-2">黄金圣斗士团队合影</h2>
+              <p className="text-sm text-gray-400">Gold Saints Team Photo</p>
+            </div>
+            <div className="relative aspect-video rounded-2xl overflow-hidden border-2 border-purple-500/30">
+              <Image
+                src="/team-photo.webp"
+                alt="黄金圣斗士团队合影"
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
+                priority={false}
+              />
+            </div>
           </div>
         </div>
 
