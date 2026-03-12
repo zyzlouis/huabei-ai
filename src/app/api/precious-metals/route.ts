@@ -112,7 +112,7 @@ export async function GET() {
   } catch (error) {
     console.error('贵金属API错误:', error)
     return NextResponse.json(
-      { error: '获取数据失败', details: error.message },
+      { error: '获取数据失败', details: error instanceof Error ? error.message : String(error) },
       { status: 500 }
     )
   }
