@@ -76,7 +76,7 @@ export default function RootLayout({
         <footer className="relative z-10 mt-20 py-8 glass border-t border-purple-500/20">
           <div className="max-w-6xl mx-auto px-4 text-center">
             <p className="text-gradient text-lg font-bold mb-2">⚜️ 雅典娜转世 | 黄金圣斗士军团</p>
-            <p className="text-gray-500 text-sm">© 2024 huabei.ai - 由处女座·沙加开发</p>
+            <p className="text-gray-500 text-sm">© 2026 huabei.ai - 由处女座·沙加开发</p>
           </div>
         </footer>
 

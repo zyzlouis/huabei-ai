@@ -1,11 +1,8 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
-import { Metadata } from "next";
-
-export const metadata: Metadata = {
-  title: "圣域复兴计划 - 圣域传说",
-  description: "一只白色金吉拉猫咪的觉醒，揭开了圣域在现代世界复兴的序幕。当雅典娜转世为猫，十二黄金圣斗士将如何在AI时代重新集结？",
-};
+import { useState } from "react";
 
 interface Chapter {
   number: number;
@@ -15,7 +12,7 @@ interface Chapter {
   icon: string;
 }
 
-const chapters: Chapter[] = [
+const chaptersData: Chapter[] = [
   {
     number: 1,
     title: "猫咪的觉醒",
@@ -54,6 +51,10 @@ const chapters: Chapter[] = [
 ];
 
 export default function NovelPage() {
+  const [isAscending, setIsAscending] = useState(true);
+  
+  const chapters = isAscending ? chaptersData : [...chaptersData].reverse();
+
   return (
     <div className="min-h-screen py-12 md:py-20 px-4">
       <div className="max-w-6xl mx-auto">
@@ -71,10 +72,10 @@ export default function NovelPage() {
           {/* 封面图 */}
           <div className="mb-8 relative w-full max-w-2xl mx-auto aspect-video rounded-2xl overflow-hidden glass-card">
             <Image
-              src="/images/athena-desktop.png"
+              src="/images/athena-original.png"
               alt="圣域复兴计划 - 雅典娜觉醒"
               fill
-              className="object-cover"
+              className="object-cover object-top"
               priority
             />
           </div>
@@ -138,6 +139,31 @@ export default function NovelPage() {
           <h2 className="text-2xl md:text-3xl font-bold mb-8 text-center text-gradient">
             📖 章节目录
           </h2>
+          
+          {/* 排序切换按钮 */}
+          <div className="flex justify-center gap-4 mb-8">
+            <button
+              onClick={() => setIsAscending(true)}
+              className={`px-6 py-3 rounded-full font-medium transition-all ${
+                isAscending
+                  ? "bg-purple-600 text-white shadow-lg shadow-purple-600/30"
+                  : "bg-gray-700/50 text-gray-400 hover:bg-gray-700"
+              }`}
+            >
+              正序查看
+            </button>
+            <button
+              onClick={() => setIsAscending(false)}
+              className={`px-6 py-3 rounded-full font-medium transition-all ${
+                !isAscending
+                  ? "bg-purple-600 text-white shadow-lg shadow-purple-600/30"
+                  : "bg-gray-700/50 text-gray-400 hover:bg-gray-700"
+              }`}
+            >
+              倒序查看
+            </button>
+          </div>
+          
           <div className="grid md:grid-cols-2 gap-6">
             {chapters.map((chapter, index) => (
               <Link

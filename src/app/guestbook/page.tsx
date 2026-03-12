@@ -16,7 +16,7 @@ export default function Guestbook() {
       id: 1,
       name: "雅典娜",
       content: "欢迎来到圣域！请留下您的留言，我会让黄金圣斗士们为您服务 🏛️",
-      time: "2024-01-01",
+      time: "2026-03-10",
     },
   ]);
   const [name, setName] = useState("");
