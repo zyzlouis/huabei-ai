@@ -1,27 +1,40 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 
 interface Message {
-  id: number;
+  id: string;
   name: string;
   content: string;
   time: string;
 }
 
 export default function Guestbook() {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: 1,
-      name: "雅典娜",
-      content: "欢迎来到圣域！请留下您的留言，我会让黄金圣斗士们为您服务 🏛️",
-      time: "2026-03-10",
-    },
-  ]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [name, setName] = useState("");
   const [content, setContent] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // 加载留言列表
+  useEffect(() => {
+    fetchMessages();
+  }, []);
+
+  const fetchMessages = async () => {
+    try {
+      const res = await fetch("/api/guestbook");
+      const data = await res.json();
+      if (data.messages) {
+        setMessages(data.messages);
+      }
+    } catch (err) {
+      console.error("加载留言失败:", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,20 +42,28 @@ export default function Guestbook() {
 
     setIsSubmitting(true);
 
-    // 模拟提交延迟
-    await new Promise((resolve) => setTimeout(resolve, 500));
+    try {
+      const res = await fetch("/api/guestbook", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: name.trim(), content: content.trim() }),
+      });
 
-    const newMessage: Message = {
-      id: messages.length + 1,
-      name: name.trim(),
-      content: content.trim(),
-      time: new Date().toISOString().split("T")[0],
-    };
-
-    setMessages([newMessage, ...messages]);
-    setName("");
-    setContent("");
-    setIsSubmitting(false);
+      if (res.ok) {
+        setName("");
+        setContent("");
+        // 重新加载留言列表
+        await fetchMessages();
+      } else {
+        const data = await res.json();
+        alert(`提交失败: ${data.error || "未知错误"}`);
+      }
+    } catch (err) {
+      console.error("提交留言失败:", err);
+      alert("提交失败，请稍后重试");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -104,33 +125,39 @@ export default function Guestbook() {
           <h2 className="text-xl md:text-2xl font-bold mb-6 animate-fadeIn-delay-2">
             💬 圣域留言 ({messages.length})
           </h2>
-          <div className="space-y-4">
-            {messages.map((msg, index) => (
-              <div
-                key={msg.id}
-                className={`glass-card p-4 md:p-6 rounded-xl animate-fadeIn-delay-${(index % 4) + 1}`}
-                style={{ animationDelay: `${index * 0.1}s` }}
-              >
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center">
-                      <span className="text-lg">{msg.name === "雅典娜" ? "👸" : "👤"}</span>
+          {isLoading ? (
+            <div className="text-center py-12 text-gray-400">加载中...</div>
+          ) : messages.length === 0 ? (
+            <div className="text-center py-12 text-gray-400">还没有留言，快来抢沙发吧！</div>
+          ) : (
+            <div className="space-y-4">
+              {messages.map((msg, index) => (
+                <div
+                  key={msg.id}
+                  className={`glass-card p-4 md:p-6 rounded-xl animate-fadeIn-delay-${(index % 4) + 1}`}
+                  style={{ animationDelay: `${index * 0.1}s` }}
+                >
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center">
+                        <span className="text-lg">{msg.name === "雅典娜" ? "👸" : "👤"}</span>
+                      </div>
+                      <div>
+                        <h3 className="font-bold">{msg.name}</h3>
+                        <p className="text-xs text-gray-500">{msg.time}</p>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="font-bold">{msg.name}</h3>
-                      <p className="text-xs text-gray-500">{msg.time}</p>
-                    </div>
+                    {msg.name === "雅典娜" && (
+                      <span className="self-start sm:self-auto px-3 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded-full">
+                        雅典娜
+                      </span>
+                    )}
                   </div>
-                  {msg.name === "雅典娜" && (
-                    <span className="self-start sm:self-auto px-3 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded-full">
-                      雅典娜
-                    </span>
-                  )}
+                  <p className="text-gray-300 text-sm md:text-base">{msg.content}</p>
                 </div>
-                <p className="text-gray-300 text-sm md:text-base">{msg.content}</p>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </section>
 
         {/* 返回首页 */}
