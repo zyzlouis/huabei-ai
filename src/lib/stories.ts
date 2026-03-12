@@ -57,6 +57,11 @@ function parseMarkdown(content: string): {
         }
       }
       
+      // 尝试解析数字格式（特别是 chapter 字段）
+      if (key === 'chapter' && !isNaN(Number(value))) {
+        value = Number(value);
+      }
+      
       frontmatter[key] = value;
     }
   });
