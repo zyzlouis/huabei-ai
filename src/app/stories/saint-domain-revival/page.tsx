@@ -1,65 +1,27 @@
-"use client";
-
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
-
-interface Chapter {
-  number: number;
-  title: string;
-  slug: string;
-  description: string;
-  icon: string;
-}
-
-const chaptersData: Chapter[] = [
-  {
-    number: 1,
-    title: "猫咪的觉醒",
-    slug: "chapter-1",
-    description: "一只名叫小白的金吉拉猫咪突然觉醒了前世记忆——她竟是雅典娜女神！",
-    icon: "🐱"
-  },
-  {
-    number: 2,
-    title: "白羊座的AI帝国",
-    slug: "chapter-2",
-    description: "穆，白羊座黄金圣斗士，如今是AI创业公司的技术总监。",
-    icon: "🐏"
-  },
-  {
-    number: 3,
-    title: "金牛座的量子迷宫",
-    slug: "chapter-3",
-    description: "阿鲁迪巴，金牛座黄金圣斗士，量子计算实验室的首席科学家。",
-    icon: "🐂"
-  },
-  {
-    number: 4,
-    title: "双子座的数字分身",
-    slug: "chapter-4",
-    description: "撒加与加隆，双子座的光明与黑暗，在AI时代的新对决。",
-    icon: "👥"
-  },
-  {
-    number: 5,
-    title: "巨蟹座的虚拟圣域",
-    slug: "chapter-5",
-    description: "迪斯马斯克，巨蟹座黄金圣斗士，虚拟现实游戏的设计师。",
-    icon: "🦀"
-  }
-];
+import { getAllStories } from "@/lib/stories";
+import NovelChapterList from "./NovelChapterList";
 
 export default function NovelPage() {
-  const [isAscending, setIsAscending] = useState(true);
-  
-  const chapters = isAscending ? chaptersData : [...chaptersData].reverse();
+  // 服务端动态读取所有属于本小说的章节
+  const allStories = getAllStories();
+  const chapters = allStories
+    .filter((s) => s.novel === "saint-domain-revival" && s.chapter != null)
+    .sort((a, b) => a.chapter! - b.chapter!)
+    .map((s) => ({
+      number: s.chapter!,
+      title: s.title,
+      slug: s.slug,
+      description: s.description,
+      icon: s.icon || "📖",
+    }));
 
   return (
     <div className="min-h-screen py-12 md:py-20 px-4">
       <div className="max-w-6xl mx-auto">
         {/* 返回按钮 */}
-        <Link 
+        <Link
           href="/stories"
           className="inline-flex items-center gap-2 text-gray-400 hover:text-purple-400 transition-colors mb-8"
         >
@@ -79,7 +41,7 @@ export default function NovelPage() {
               priority
             />
           </div>
-          
+
           <div className="text-6xl md:text-7xl mb-6 float">⚔️</div>
           <h1 className="text-4xl md:text-6xl font-bold text-gradient mb-6">
             圣域复兴计划
@@ -88,22 +50,22 @@ export default function NovelPage() {
             一只白色金吉拉猫咪的觉醒，揭开了圣域在现代世界复兴的序幕。<br />
             当雅典娜转世为猫，十二黄金圣斗士将如何在AI时代重新集结？
           </p>
-          
+
           {/* 元信息 */}
           <div className="flex flex-wrap justify-center gap-4 text-sm text-gray-500">
             <span>📅 2026-03-12</span>
             <span>·</span>
             <span>✍️ 处女座·沙加</span>
             <span>·</span>
-            <span>📖 5章完结</span>
+            <span>📖 {chapters.length}章</span>
             <span>·</span>
-            <span>⏱️ 约2小时</span>
+            <span>⏱️ 约{Math.ceil(chapters.length * 0.4 * 10) / 10}小时</span>
           </div>
 
           {/* 标签 */}
           <div className="mt-6 flex flex-wrap justify-center gap-2">
             {["圣域传说", "黄金圣斗士", "AI时代", "连载小说"].map((tag) => (
-              <span 
+              <span
                 key={tag}
                 className="px-4 py-2 text-sm bg-purple-600/30 rounded-full text-purple-300"
               >
@@ -134,71 +96,8 @@ export default function NovelPage() {
           </div>
         </section>
 
-        {/* 章节列表 */}
-        <section className="mb-12">
-          <h2 className="text-2xl md:text-3xl font-bold mb-8 text-center text-gradient">
-            📖 章节目录
-          </h2>
-          
-          {/* 排序切换按钮 */}
-          <div className="flex justify-center gap-4 mb-8">
-            <button
-              onClick={() => setIsAscending(true)}
-              className={`px-6 py-3 rounded-full font-medium transition-all ${
-                isAscending
-                  ? "bg-purple-600 text-white shadow-lg shadow-purple-600/30"
-                  : "bg-gray-700/50 text-gray-400 hover:bg-gray-700"
-              }`}
-            >
-              正序查看
-            </button>
-            <button
-              onClick={() => setIsAscending(false)}
-              className={`px-6 py-3 rounded-full font-medium transition-all ${
-                !isAscending
-                  ? "bg-purple-600 text-white shadow-lg shadow-purple-600/30"
-                  : "bg-gray-700/50 text-gray-400 hover:bg-gray-700"
-              }`}
-            >
-              倒序查看
-            </button>
-          </div>
-          
-          <div className="grid md:grid-cols-2 gap-6">
-            {chapters.map((chapter, index) => (
-              <Link
-                key={chapter.slug}
-                href={`/stories/${chapter.slug}`}
-                className="glass-card rounded-2xl p-6 md:p-8 card-hover block animate-fadeIn"
-                style={{ animationDelay: `${index * 0.1}s` }}
-              >
-                {/* 章节图标和编号 */}
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="text-4xl float">{chapter.icon}</div>
-                  <div className="text-sm text-purple-400 font-mono">
-                    第 {chapter.number} 章
-                  </div>
-                </div>
-
-                {/* 章节标题 */}
-                <h3 className="text-xl md:text-2xl font-bold mb-3 text-gradient">
-                  {chapter.title}
-                </h3>
-
-                {/* 章节描述 */}
-                <p className="text-gray-300 text-sm md:text-base mb-4">
-                  {chapter.description}
-                </p>
-
-                {/* 阅读按钮 */}
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-gray-500">点击阅读</span>
-                  <span className="text-purple-400">→</span>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </section>
+        {/* 章节列表（客户端组件，保留排序功能） */}
+        <NovelChapterList chapters={chapters} />
 
         {/* 作者的话 */}
         <section className="glass-card rounded-2xl p-8 md:p-12 mb-12">
@@ -206,9 +105,7 @@ export default function NovelPage() {
             ✍️ 作者的话
           </h2>
           <div className="text-gray-300 space-y-4 leading-relaxed">
-            <p>
-              这是一个关于传承与创新的故事。
-            </p>
+            <p>这是一个关于传承与创新的故事。</p>
             <p>
               在AI技术飞速发展的今天，我们是否还记得那些关于勇气、信仰和守护的古老传说？当神话与科技相遇，会碰撞出怎样的火花？
             </p>
@@ -223,14 +120,14 @@ export default function NovelPage() {
 
         {/* 底部导航 */}
         <footer className="flex flex-col md:flex-row justify-between items-center gap-4">
-          <Link 
+          <Link
             href="/stories"
             className="btn-secondary px-8 py-4 rounded-full w-full md:w-auto text-center"
           >
             ← 返回故事列表
           </Link>
-          
-          <Link 
+
+          <Link
             href="/stories/chapter-1"
             className="btn-primary px-8 py-4 rounded-full w-full md:w-auto text-center"
           >

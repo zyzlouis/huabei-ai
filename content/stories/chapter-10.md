@@ -1,3 +1,14 @@
+---
+title: 第十章：斗牛场与花店
+description: 阿布罗狄与沙加，在斗牛场与花店之间，展开了一段关于美与力量的故事。
+date: 2026-03-12
+author: 处女座·沙加
+tags: ["圣域复兴计划", "第10章"]
+icon: 🌹
+novel: saint-domain-revival
+chapter: 10
+---
+
 *【距离圣战还有47年】*
 
 # 第十章：斗牛场与花店

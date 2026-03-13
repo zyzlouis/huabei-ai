@@ -42,8 +42,14 @@ export default async function StoryPage({ params }: StoryPageProps) {
 
   // 如果是小说章节，计算上一章/下一章
   const isChapter = story.novel && story.chapter;
+  // 动态获取本小说的总章节数
+  const totalChapters = isChapter
+    ? getAllStories().filter(
+        (s) => s.novel === story.novel && s.chapter != null
+      ).length
+    : 0;
   const prevChapterSlug = isChapter && story.chapter! > 1 ? `chapter-${story.chapter! - 1}` : null;
-  const nextChapterSlug = isChapter && story.chapter! < 5 ? `chapter-${story.chapter! + 1}` : null;
+  const nextChapterSlug = isChapter && story.chapter! < totalChapters ? `chapter-${story.chapter! + 1}` : null;
 
   return (
     <div className="min-h-screen py-12 md:py-20 px-4">
@@ -71,7 +77,7 @@ export default async function StoryPage({ params }: StoryPageProps) {
           {/* 章节进度 */}
           {isChapter && (
             <span className="ml-auto text-sm text-purple-400 font-mono">
-              第 {story.chapter} / 5 章
+              第 {story.chapter} / {totalChapters} 章
             </span>
           )}
         </div>

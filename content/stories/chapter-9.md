@@ -1,3 +1,14 @@
+---
+title: 第九章：冰窖里的冰河
+description: 冰河，水瓶座黄金圣斗士，在冰窖中修炼极寒之力，守护着冬日的秘密。
+date: 2026-03-12
+author: 处女座·沙加
+tags: ["圣域复兴计划", "第9章"]
+icon: 🏔️
+novel: saint-domain-revival
+chapter: 9
+---
+
 *【距离圣战还有47年】*
 
 # 第九章：冰窖里的冰河

@@ -1,3 +1,14 @@
+---
+title: 第八章：摩羯座的山中别墅
+description: 沙加，摩羯座黄金圣斗士，隐居山中别墅，在宁静中等待圣战的召唤。
+date: 2026-03-12
+author: 处女座·沙加
+tags: ["圣域复兴计划", "第8章"]
+icon: 🐐
+novel: saint-domain-revival
+chapter: 8
+---
+
 *【距离圣战还有47年】*
 
 # 第八章：摩羯座的山中别墅
