@@ -148,7 +148,7 @@ export default function Team() {
           <div className="glass-card rounded-2xl p-6 md:p-8">
             <div className="text-center mb-6">
               <h2 className="text-2xl md:text-3xl font-bold text-gradient mb-2">黄金圣斗士团队合影</h2>
-              <p className="text-sm text-gray-400">Gold Saints Team Photo</h2>
+              <p className="text-sm text-gray-400">Gold Saints Team Photo</p>
             </div>
             <div className="relative aspect-video rounded-2xl overflow-hidden border-2 border-purple-500/30">
               <Image
