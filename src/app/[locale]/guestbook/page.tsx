@@ -1,7 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useParams } from "next/navigation";
+import { useLocale } from "next-intl";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 interface Message {
   id: string;
@@ -11,6 +14,9 @@ interface Message {
 }
 
 export default function Guestbook() {
+  const params = useParams();
+  const locale = params.locale as string;
+  const t = useTranslations("guestbook");
   const [messages, setMessages] = useState<Message[]>([]);
   const [name, setName] = useState("");
   const [content, setContent] = useState("");
@@ -30,7 +36,7 @@ export default function Guestbook() {
         setMessages(data.messages);
       }
     } catch (err) {
-      console.error("加载留言失败:", err);
+      console.error("Failed to load messages:", err);
     } finally {
       setIsLoading(false);
     }
@@ -56,11 +62,11 @@ export default function Guestbook() {
         await fetchMessages();
       } else {
         const data = await res.json();
-        alert(`提交失败: ${data.error || "未知错误"}`);
+        alert(`${t("submitFailed")}: ${data.error || t("unknownError")}`);
       }
     } catch (err) {
-      console.error("提交留言失败:", err);
-      alert("提交失败，请稍后重试");
+      console.error("Failed to submit message:", err);
+      alert(t("submitRetry"));
     } finally {
       setIsSubmitting(false);
     }
@@ -73,39 +79,41 @@ export default function Guestbook() {
         <div className="text-center mb-12 animate-fadeIn">
           <div className="text-5xl md:text-8xl mb-4 float">📝</div>
           <h1 className="text-3xl md:text-5xl font-bold mb-4 text-gradient">
-            圣域留言板
+            {t("title")}
           </h1>
-          <p className="text-lg md:text-xl text-purple-200">留下您的想法，雅典娜会亲自阅读</p>
+          <p className="text-lg md:text-xl text-purple-200">{t("subtitle")}</p>
         </div>
 
         {/* 留言表单 */}
         <section className="glass-card p-6 md:p-8 rounded-2xl mb-10 animate-fadeIn-delay-1">
-          <h2 className="text-xl md:text-2xl font-bold mb-6">✍️ 写下您的留言</h2>
+          <h2 className="text-xl md:text-2xl font-bold mb-6">{t("formTitle")}</h2>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label htmlFor="name" className="block text-sm text-gray-400 mb-2">
-                您的名字
+                {t("nameLabel")}
               </label>
               <input
                 type="text"
                 id="name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="请输入您的名字"
+                placeholder={t("namePlaceholder")}
+                maxLength={50}
                 className="w-full px-4 py-3 bg-black/40 border border-purple-500/30 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all"
                 required
               />
             </div>
             <div>
               <label htmlFor="content" className="block text-sm text-gray-400 mb-2">
-                留言内容
+                {t("contentLabel")}
               </label>
               <textarea
                 id="content"
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
-                placeholder="请写下您想对雅典娜和圣斗士们说的话..."
+                placeholder={t("contentPlaceholder")}
                 rows={4}
+                maxLength={500}
                 className="w-full px-4 py-3 bg-black/40 border border-purple-500/30 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all resize-none"
                 required
               />
@@ -115,7 +123,7 @@ export default function Guestbook() {
               disabled={isSubmitting}
               className="w-full py-3.5 btn-primary rounded-xl font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isSubmitting ? "发送中..." : "🚀 发送到圣域"}
+              {isSubmitting ? t("submitting") : t("submitBtn")}
             </button>
           </form>
         </section>
@@ -123,12 +131,12 @@ export default function Guestbook() {
         {/* 留言列表 */}
         <section>
           <h2 className="text-xl md:text-2xl font-bold mb-6 animate-fadeIn-delay-2">
-            💬 圣域留言 ({messages.length})
+            💬 {t("messageList")} ({messages.length})
           </h2>
           {isLoading ? (
-            <div className="text-center py-12 text-gray-400">加载中...</div>
+            <div className="text-center py-12 text-gray-400">{t("loading")}</div>
           ) : messages.length === 0 ? (
-            <div className="text-center py-12 text-gray-400">还没有留言，快来抢沙发吧！</div>
+            <div className="text-center py-12 text-gray-400">{t("noMessages")}</div>
           ) : (
             <div className="space-y-4">
               {messages.map((msg, index) => (
@@ -149,7 +157,7 @@ export default function Guestbook() {
                     </div>
                     {msg.name === "雅典娜" && (
                       <span className="self-start sm:self-auto px-3 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded-full">
-                        雅典娜
+                        {t("athenaBadge")}
                       </span>
                     )}
                   </div>
@@ -162,8 +170,8 @@ export default function Guestbook() {
 
         {/* 返回首页 */}
         <div className="mt-12 text-center">
-          <Link href="/" className="btn-primary inline-block px-8 py-4 rounded-full font-bold text-lg">
-            ← 返回首页
+          <Link href={`/${locale}`} className="btn-primary inline-block px-8 py-4 rounded-full font-bold text-lg">
+            ← {t("backToHome")}
           </Link>
         </div>
       </div>

@@ -24,10 +24,10 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: "nav" });
+  const t = await getTranslations({ locale, namespace: "metadata" });
   return {
-    title: "AI圣斗士 - 黄金十二宫军团",
-    description: "雅典娜转世的AI助手团队，12黄金圣斗士为您服务",
+    title: t("title"),
+    description: t("description"),
   };
 }
 
@@ -58,8 +58,8 @@ export default async function LocaleLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#0a0a0f] text-white min-h-screen relative overflow-x-hidden`}
       >
         <NextIntlClientProvider messages={messages}>
-          {/* 星空背景 */}
-          <div className="stars" id="stars"></div>
+          {/* 星空背景 - 纯 CSS 方案 */}
+          <div className="stars"></div>
 
           {/* 背景光晕 */}
           <div className="fixed inset-0 pointer-events-none z-0">
@@ -149,30 +149,6 @@ export default async function LocaleLayout({
               </p>
             </div>
           </footer>
-
-          {/* 星空生成脚本 */}
-          <script
-            dangerouslySetInnerHTML={{
-              __html: `
-              (function() {
-                const starsContainer = document.getElementById('stars');
-                if (!starsContainer) return;
-                const starCount = 80;
-                for (let i = 0; i < starCount; i++) {
-                  const star = document.createElement('div');
-                  star.className = 'star';
-                  star.style.left = Math.random() * 100 + '%';
-                  star.style.top = Math.random() * 100 + '%';
-                  star.style.animationDelay = Math.random() * 3 + 's';
-                  star.style.opacity = Math.random() * 0.5 + 0.3;
-                  star.style.width = Math.random() * 2 + 1 + 'px';
-                  star.style.height = star.style.width;
-                  starsContainer.appendChild(star);
-                }
-              })();
-            `,
-            }}
-          />
         </NextIntlClientProvider>
       </body>
     </html>

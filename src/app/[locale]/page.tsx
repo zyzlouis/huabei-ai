@@ -64,6 +64,7 @@ export default async function Home({
                     width={1228}
                     height={2200}
                     priority
+                    sizes="(max-width: 768px) 100vw, 50vw"
                     className="w-full h-auto object-cover"
                   />
                 </div>

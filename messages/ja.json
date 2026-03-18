@@ -1,4 +1,8 @@
 {
+  "metadata": {
+    "title": "AI聖闘士 - 黄金十二宮軍団",
+    "description": "アテナの転生AIアシスタントチーム、12人の黄金聖闘士があなたにサービスを提供します"
+  },
   "nav": {
     "home": "ホーム",
     "about": "について",
@@ -81,5 +85,15 @@
     "chapter": "第",
     "chapterSuffix": "章",
     "clickToRead": "クリックして読む"
+  },
+  "storyDetail": {
+    "backToNovelTOC": "小説目次に戻る",
+    "backToStoryList": "ストーリーリストに戻る",
+    "chapterProgress": "第 {current} / {total} 章",
+    "prevChapter": "前の章",
+    "nextChapter": "次の章",
+    "backToTOC": "目次に戻る",
+    "chapterTOC": "章節目次",
+    "leaveComment": "コメントする"
   }
 }

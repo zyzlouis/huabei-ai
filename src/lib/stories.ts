@@ -5,6 +5,10 @@ import html from "remark-html";
 
 const storiesDirectory = path.join(process.cwd(), "content/stories");
 
+// 模块级缓存
+let allStoriesCache: Story[] | null = null;
+let storyCacheMap: Map<string, Story> | null = null;
+
 export interface Story {
   slug: string;
   title: string;
@@ -107,13 +111,15 @@ function extractDescription(content: string): string {
  * 获取所有故事
  */
 export function getAllStories(): Story[] {
+  if (allStoriesCache) return allStoriesCache;
+
   // 确保目录存在
   if (!fs.existsSync(storiesDirectory)) {
     return [];
   }
 
   const fileNames = fs.readdirSync(storiesDirectory);
-  const allStories = fileNames
+  allStoriesCache = fileNames
     .filter((fileName) => fileName.endsWith(".md"))
     .map((fileName) => {
       const slug = fileName.replace(/\.md$/, "");
@@ -144,13 +150,23 @@ export function getAllStories(): Story[] {
     });
 
   // 按日期排序（最新的在前）
-  return allStories.sort((a, b) => (a.date < b.date ? 1 : -1));
+  allStoriesCache = allStoriesCache.sort((a, b) => (a.date < b.date ? 1 : -1));
+  storyCacheMap = new Map(allStoriesCache.map((s) => [s.slug, s]));
+  return allStoriesCache;
 }
 
 /**
  * 根据 slug 获取单个故事
  */
 export function getStoryBySlug(slug: string): Story | null {
+  // 先查缓存（列表页已缓存的不含 contentHtml）
+  if (storyCacheMap?.has(slug)) {
+    // 如果是列表页的缓存（contentHtml 为空），需要重新加载
+    const cached = storyCacheMap.get(slug)!;
+    if (cached.contentHtml) return cached;
+    // fall through to load with contentHtml
+  }
+
   const fullPath = path.join(storiesDirectory, `${slug}.md`);
 
   if (!fs.existsSync(fullPath)) {
@@ -170,7 +186,7 @@ export function getStoryBySlug(slug: string): Story | null {
   // 使用 frontmatter 中的描述或从内容中提取
   const description = frontmatter.description || extractDescription(body) || extractDescription(fileContents);
 
-  return {
+  const story: Story = {
     slug,
     title,
     description,
@@ -183,4 +199,9 @@ export function getStoryBySlug(slug: string): Story | null {
     novel: frontmatter.novel,
     chapter: frontmatter.chapter,
   };
+
+  // 更新缓存
+  if (storyCacheMap) storyCacheMap.set(slug, story);
+
+  return story;
 }

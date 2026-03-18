@@ -1,11 +1,27 @@
 import { NextRequest, NextResponse } from "next/server";
 
+// 简单速率限制：60秒内同IP只允许1次提交
+const rateLimitMap = new Map<string, number>();
+const RATE_LIMIT_WINDOW_MS = 60_000;
+
+function stripHtmlTags(str: string): string {
+  return str.replace(/<[^>]*>/g, "");
+}
+
 const FEISHU_APP_ID = process.env.FEISHU_APP_ID!;
 const FEISHU_APP_SECRET = process.env.FEISHU_APP_SECRET!;
 const BITABLE_APP_TOKEN = process.env.BITABLE_APP_TOKEN || "NH5Cb7ubXaetrasXnB2cVmEjnWg";
 const BITABLE_TABLE_ID = process.env.BITABLE_TABLE_ID || "tblJrgiIXS9vVEhH";
 
+// 内存缓存 tenant_access_token，TTL 2小时
+let cachedToken: { token: string; expiresAt: number } | null = null;
+
 async function getTenantAccessToken(): Promise<string> {
+  // 检查缓存是否有效（提前5分钟刷新）
+  if (cachedToken && Date.now() < cachedToken.expiresAt - 5 * 60 * 1000) {
+    return cachedToken.token;
+  }
+
   const res = await fetch(
     "https://open.feishu.cn/open-apis/auth/v3/tenant_access_token/internal",
     {
@@ -19,7 +35,13 @@ async function getTenantAccessToken(): Promise<string> {
   );
   const data = await res.json();
   if (data.code !== 0) throw new Error(`飞书鉴权失败: ${data.msg}`);
-  return data.tenant_access_token;
+
+  cachedToken = {
+    token: data.tenant_access_token,
+    expiresAt: Date.now() + data.expire * 1000,
+  };
+
+  return cachedToken.token;
 }
 
 // GET /api/guestbook - 读取留言列表
@@ -78,10 +100,36 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "昵称和留言内容不能为空" }, { status: 400 });
     }
 
+    // Strip HTML tags
+    const cleanName = stripHtmlTags(name.trim());
+    const cleanContent = stripHtmlTags(content.trim());
+
+    // 字符限制
+    if (cleanName.length > 50) {
+      return NextResponse.json({ error: "昵称不能超过50个字符" }, { status: 400 });
+    }
+    if (cleanContent.length > 500) {
+      return NextResponse.json({ error: "留言内容不能超过500个字符" }, { status: 400 });
+    }
+
+    // 速率限制
     const ip =
       req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
       req.headers.get("x-real-ip") ||
       "unknown";
+    const now = Date.now();
+    const lastSubmit = rateLimitMap.get(ip);
+    if (lastSubmit && now - lastSubmit < RATE_LIMIT_WINDOW_MS) {
+      return NextResponse.json({ error: "提交过于频繁，请60秒后再试" }, { status: 429 });
+    }
+    rateLimitMap.set(ip, now);
+
+    // 清理过期的速率限制记录（每次请求清理一次即可）
+    if (rateLimitMap.size > 1000) {
+      for (const [key, ts] of rateLimitMap) {
+        if (now - ts >= RATE_LIMIT_WINDOW_MS) rateLimitMap.delete(key);
+      }
+    }
 
     const token = await getTenantAccessToken();
     const res = await fetch(
@@ -94,8 +142,8 @@ export async function POST(req: NextRequest) {
         },
         body: JSON.stringify({
           fields: {
-            昵称: name.trim(),
-            留言内容: content.trim(),
+            昵称: cleanName,
+            留言内容: cleanContent,
             提交时间: Date.now(),
             "IP/来源": ip,
           },

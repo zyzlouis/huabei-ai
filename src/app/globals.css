@@ -43,30 +43,115 @@ body::before {
   z-index: -1;
 }
 
-/* 星空背景效果 */
+/* 星空背景效果 - 纯 CSS box-shadow 方案 */
 .stars {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: -1;
-}
-
-.star {
-  position: absolute;
   width: 2px;
   height: 2px;
-  background: white;
-  border-radius: 50%;
-  animation: twinkle 3s ease-in-out infinite;
+  pointer-events: none;
+  z-index: -1;
+  box-shadow:
+    23px 45px 0 0 rgba(255,255,255,0.7),
+    89px 102px 0 0 rgba(255,255,255,0.5),
+    156px 23px 0 0 rgba(255,255,255,0.4),
+    210px 178px 0 0 rgba(255,255,255,0.6),
+    267px 89px 0 0 rgba(255,255,255,0.3),
+    334px 234px 0 0 rgba(255,255,255,0.5),
+    389px 12px 0 0 rgba(255,255,255,0.7),
+    445px 167px 0 0 rgba(255,255,255,0.4),
+    512px 278px 0 0 rgba(255,255,255,0.6),
+    578px 56px 0 0 rgba(255,255,255,0.3),
+    634px 189px 0 0 rgba(255,255,255,0.5),
+    698px 34px 0 0 rgba(255,255,255,0.7),
+    767px 245px 0 0 rgba(255,255,255,0.4),
+    823px 123px 0 0 rgba(255,255,255,0.6),
+    890px 267px 0 0 rgba(255,255,255,0.5),
+    56px 312px 0 0 rgba(255,255,255,0.3),
+    123px 456px 0 0 rgba(255,255,255,0.7),
+    189px 345px 0 0 rgba(255,255,255,0.4),
+    256px 489px 0 0 rgba(255,255,255,0.6),
+    323px 412px 0 0 rgba(255,255,255,0.5),
+    400px 378px 0 0 rgba(255,255,255,0.3),
+    467px 512px 0 0 rgba(255,255,255,0.7),
+    534px 423px 0 0 rgba(255,255,255,0.4),
+    601px 356px 0 0 rgba(255,255,255,0.6),
+    668px 478px 0 0 rgba(255,255,255,0.5),
+    735px 398px 0 0 rgba(255,255,255,0.3),
+    802px 534px 0 0 rgba(255,255,255,0.7),
+    45px 567px 0 0 rgba(255,255,255,0.4),
+    112px 623px 0 0 rgba(255,255,255,0.5),
+    178px 589px 0 0 rgba(255,255,255,0.6),
+    245px 645px 0 0 rgba(255,255,255,0.3),
+    312px 678px 0 0 rgba(255,255,255,0.7),
+    378px 612px 0 0 rgba(255,255,255,0.4),
+    445px 723px 0 0 rgba(255,255,255,0.5),
+    512px 656px 0 0 rgba(255,255,255,0.6),
+    578px 745px 0 0 rgba(255,255,255,0.3),
+    645px 678px 0 0 rgba(255,255,255,0.7),
+    712px 789px 0 0 rgba(255,255,255,0.4),
+    778px 712px 0 0 rgba(255,255,255,0.5),
+    845px 756px 0 0 rgba(255,255,255,0.6),
+    912px 823px 0 0 rgba(255,255,255,0.3),
+    978px 689px 0 0 rgba(255,255,255,0.7),
+    1045px 834px 0 0 rgba(255,255,255,0.4),
+    34px 823px 0 0 rgba(255,255,255,0.5),
+    101px 912px 0 0 rgba(255,255,255,0.6),
+    167px 867px 0 0 rgba(255,255,255,0.3),
+    234px 945px 0 0 rgba(255,255,255,0.7),
+    301px 889px 0 0 rgba(255,255,255,0.4),
+    367px 978px 0 0 rgba(255,255,255,0.5),
+    434px 934px 0 0 rgba(255,255,255,0.6),
+    501px 1012px 0 0 rgba(255,255,255,0.3),
+    567px 956px 0 0 rgba(255,255,255,0.7),
+    634px 1045px 0 0 rgba(255,255,255,0.4),
+    701px 978px 0 0 rgba(255,255,255,0.5),
+    768px 1067px 0 0 rgba(255,255,255,0.6),
+    834px 1012px 0 0 rgba(255,255,255,0.3),
+    901px 1089px 0 0 rgba(255,255,255,0.7),
+    967px 1034px 0 0 rgba(255,255,255,0.4),
+    1034px 1100px 0 0 rgba(255,255,255,0.5),
+    67px 1123px 0 0 rgba(255,255,255,0.6),
+    134px 1089px 0 0 rgba(255,255,255,0.3),
+    200px 1156px 0 0 rgba(255,255,255,0.7),
+    267px 1123px 0 0 rgba(255,255,255,0.4),
+    334px 1178px 0 0 rgba(255,255,255,0.5),
+    401px 1134px 0 0 rgba(255,255,255,0.6),
+    467px 1200px 0 0 rgba(255,255,255,0.3),
+    534px 1167px 0 0 rgba(255,255,255,0.7),
+    601px 1234px 0 0 rgba(255,255,255,0.4),
+    668px 1189px 0 0 rgba(255,255,255,0.5),
+    734px 1256px 0 0 rgba(255,255,255,0.6),
+    801px 1212px 0 0 rgba(255,255,255,0.3),
+    867px 1289px 0 0 rgba(255,255,255,0.7),
+    934px 1245px 0 0 rgba(255,255,255,0.4),
+    1001px 1312px 0 0 rgba(255,255,255,0.5),
+    12px 1323px 0 0 rgba(255,255,255,0.6),
+    78px 1289px 0 0 rgba(255,255,255,0.3),
+    145px 1356px 0 0 rgba(255,255,255,0.7),
+    211px 1312px 0 0 rgba(255,255,255,0.4),
+    278px 1378px 0 0 rgba(255,255,255,0.5),
+    345px 1345px 0 0 rgba(255,255,255,0.6),
+    412px 1412px 0 0 rgba(255,255,255,0.3),
+    478px 1378px 0 0 rgba(255,255,255,0.7),
+    545px 1434px 0 0 rgba(255,255,255,0.4),
+    612px 1389px 0 0 rgba(255,255,255,0.5),
+    678px 1456px 0 0 rgba(255,255,255,0.6),
+    745px 1412px 0 0 rgba(255,255,255,0.3),
+    812px 1478px 0 0 rgba(255,255,255,0.7),
+    878px 1434px 0 0 rgba(255,255,255,0.4),
+    945px 1500px 0 0 rgba(255,255,255,0.5);
+  animation: twinkleStars 4s ease-in-out infinite alternate;
 }
 
-@keyframes twinkle {
-  0%, 100% { opacity: 0.3; }
+@keyframes twinkleStars {
+  0% { opacity: 0.6; }
   50% { opacity: 1; }
+  100% { opacity: 0.6; }
 }
+
+/* 保留 .star 类以防兼容性，但不再使用 */
 
 /* 毛玻璃效果 */
 .glass {
@@ -495,4 +580,27 @@ body::before {
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+/* 减弱动效偏好 */
+@media (prefers-reduced-motion: reduce) {
+  .float,
+  .float-delayed,
+  .aurora,
+  .text-gradient {
+    animation: none !important;
+  }
+
+  .glass-card,
+  .card-hover,
+  .btn-primary,
+  .btn-secondary,
+  .nav-link {
+    transition: none !important;
+  }
+
+  .stars {
+    animation: none !important;
+    opacity: 0.7;
+  }
 }

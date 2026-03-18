@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useParams } from 'next/navigation'
 import { SpreadPair, fetchMetalsData, generateMockPrices } from '@/lib/precious-metals'
 import Link from 'next/link'
 
@@ -56,6 +57,8 @@ function SpreadCard({ pair, isRealData }: { pair: SpreadPair; isRealData: boolea
 }
 
 export default function FinancePage() {
+  const params = useParams()
+  const locale = params.locale as string
   const [pairs, setPairs] = useState<SpreadPair[]>([])
   const [lastUpdate, setLastUpdate] = useState<string>('')
   const [isRealData, setIsRealData] = useState(false)
@@ -93,14 +96,14 @@ export default function FinancePage() {
     const interval = setInterval(updatePrices, isRealData ? 30000 : 3000)
     
     return () => clearInterval(interval)
-  }, [])
+  }, [isRealData])
   
   return (
     <div className="min-h-screen py-20 px-4">
       <div className="max-w-6xl mx-auto">
         {/* 面包屑导航 */}
         <div className="mb-6 text-sm text-gray-400">
-          <Link href="/" className="hover:text-amber-400 transition-colors">首页</Link>
+          <Link href={`/${locale}`} className="hover:text-amber-400 transition-colors">首页</Link>
           <span className="mx-2">/</span>
           <span className="text-purple-300">财经投资</span>
         </div>

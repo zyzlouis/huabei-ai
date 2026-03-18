@@ -31,7 +31,7 @@ export default function LanguageSwitcher() {
     const newPath = segments.join("/");
 
     // Save to cookie via document.cookie
-    document.cookie = `NEXT_LOCALE=${newLocale}; path=/; max-age=31536000; SameSite=Lax`;
+    document.cookie = `NEXT_LOCALE=${newLocale}; path=/; max-age=31536000; SameSite=Lax; Secure`;
 
     router.push(newPath);
     setOpen(false);
